@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        .el-tree-node__content,
+        .custom-tree-node {
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .InfoSpans {
+            margin-left: 500px;
+        }
+
+        .InfoSpans_item {
+            margin-left: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <el-tree :data="table" :props="defaultProps" @node-click="handleNodeClick">
+            <div class="custom-tree-node" slot-scope="{ node, data }">
+                <span>{{ node.label }}</span>
+
+                <span v-if="data.children && data.children.length > 0" class="InfoSpans">
+                    <span>{{sum(data,1)}}</span>
+                    <span class="InfoSpans_item">{{sum(data,2)}}</span>
+                    <span class="InfoSpans_item">{{sum(data,3)}}</span>
+                    <span class="InfoSpans_item">{{sum(data,4)}}</span>
+                    <span class="InfoSpans_item">{{sum(data,5)}}</span>
+                </span>
+                <span v-else style="margin-left: 230px;">
+                    <span>{{sum(data, 0)}}</span>
+                    <el-input onblur="this.value=this.value.replace(/[^[0]+]/g,'')"
+                        onkeyup="this.value=this.value.replace(/[^\d]/g,'')" style="width: 100px;" size="mini" value="1"
+                        v-model="data.num"></el-input>
+                    <el-input onblur="this.value=this.value.replace(/[^[0]+]/g,'')"
+                        onkeyup="this.value=this.value.replace(/[^\d]/g,'')" style="width: 100px;" size="mini" value="2"
+                        v-model="data.num1"></el-input>
+                    <el-input onblur="this.value=this.value.replace(/[^[0]+]/g,'')"
+                        onkeyup="this.value=this.value.replace(/[^\d]/g,'')" style="width: 100px;" size="mini" value="3"
+                        v-model="data.num2"></el-input>
+                    <el-input onblur="this.value=this.value.replace(/[^[0]+]/g,'')"
+                        onkeyup="this.value=this.value.replace(/[^\d]/g,'')" style="width: 100px;" size="mini" value="4"
+                        v-model="data.num3"></el-input>
+                </span>
+            </div>
+        </el-tree>
+    </div>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                defaultProps: {
+                    children: 'children',
+                    label: 'label',
+                    num: 'num',
+                    num1: 'num1',
+                    num2: 'num2',
+                    num3: 'num3',
+                },
+
+                table: [{
+                    id: 1,
+                    label: '第一层第一个',
+                    sum: 10,
+                    sum1: 10,
+                    sum2: 10,
+                    sum3: 10,
+                    sum4: 10,
+                    children: [{
+                        id: 11,
+                        label: '第一层第一个的第一个子元素',
+                        sum: 10,
+                        sum1: 10,
+                        sum2: 10,
+                        sum3: 10,
+                        sum4: 10,
+                        children: [{
+                                id: 111,
+                                label: '第一层第一个的第一个子元素的第一个子元素',
+                                num: 10,
+                                num1: 7,
+                                num2: 5,
+                                num3: 0,
+                            },
+                            {
+                                id: 112,
+                                label: '第一层第一个的第一个子元素的第二个子元素',
+                                num: 11,
+                                num1: 6,
+                                num2: 2,
+                                num3: 1,
+                            },
+                        ]
+                    }]
+                }, ]
+            },
+            methods: {
+                handleNodeClick(data) {
+                    console.log(data);
+                },
+                sum(item, type) {
+                    switch (type) {
+                        case 0:
+                            return Number(item.num) + Number(item.num1) + Number(item.num2) + Number(item.num3);
+                            break;
+                        case 1:
+                            // 总和
+                            console.log(1, item);
+                            let sum = 0;
+                            this.table.forEach(item1 => {
+                                if (item1.children && item1.children.length > 0) {
+                                    item1.children.forEach(item2 => {
+                                        if (item2.children && item2.children.length > 0) {
+                                            item2.children.forEach(l => {
+                                                sum += Number(l.num) + Number(l.num1) +
+                                                    Number(l.num2) + Number(l.num3)
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            return sum
+                            break;
+                        case 2:
+                            // 第一列
+                            console.log(2, item);
+                            let sum1 = 0;
+                            this.table.forEach(item1 => {
+                                if (item1.children && item1.children.length > 0) {
+                                    item1.children.forEach(item2 => {
+                                        if (item2.children && item2.children.length > 0) {
+                                            item2.children.forEach(l => {
+                                                sum1 += Number(l.num)
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            return sum1
+                        case 3:
+                            // 第一列
+                            console.log(3, item);
+                            let sum2 = 0;
+                            this.table.forEach(item1 => {
+                                if (item1.children && item1.children.length > 0) {
+                                    item1.children.forEach(item2 => {
+                                        if (item2.children && item2.children.length > 0) {
+                                            item2.children.forEach(l => {
+                                                sum2 += Number(l.num1)
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            return sum2
+                        case 4:
+                            // 第一列
+                            console.log(4, item);
+                            let sum3 = 0;
+                            this.table.forEach(item1 => {
+                                if (item1.children && item1.children.length > 0) {
+                                    item1.children.forEach(item2 => {
+                                        if (item2.children && item2.children.length > 0) {
+                                            item2.children.forEach(l => {
+                                                sum3 += Number(l.num2)
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            return sum3
+                        case 5:
+                            // 第一列
+                            console.log(5, item);
+                            let sum4 = 0;
+                            this.table.forEach(item1 => {
+                                if (item1.children && item1.children.length > 0) {
+                                    item1.children.forEach(item2 => {
+                                        if (item2.children && item2.children.length > 0) {
+                                            item2.children.forEach(l => {
+                                                sum4 +=  Number(l.num3)
+                                            })
+                                        }
+                                    })
+                                }
+                            })
+                            return sum4
+                    }
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
